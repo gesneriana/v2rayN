@@ -157,4 +157,8 @@
   <data name="grbMain.Text" xml:space="preserve">
     <value>订阅详情</value>
   </data>
+  <data name="chkForceParsing.Text" xml:space="preserve">
+    <value>强制解析</value>
+    <comment>每次更新使用代理订阅, 那么会尝试使用Google的DNS服务预先把节点的域名解析为ip</comment>
+  </data>
 </root>

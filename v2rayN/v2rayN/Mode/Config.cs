@@ -698,6 +698,11 @@ namespace v2rayN.Mode
         {
             get; set;
         } = string.Empty;
+
+        /// <summary>
+        /// Update the subscription and force the domain name to be resolved to an IP address to solve the problem of DNS pollution
+        /// </summary>
+        public bool forceParsing{ get; set; } = true;
     }
 
     [Serializable]

@@ -203,6 +203,7 @@
     <Compile Include="Handler\DownloadHandle.cs" />
     <Compile Include="Handler\ProxySetting.cs" />
     <Compile Include="Handler\SysProxyHandle.cs" />
+    <Compile Include="Mode\DnsQuery.cs" />
     <Compile Include="Mode\ESpeedActionType.cs" />
     <Compile Include="Mode\EGlobalHotkey.cs" />
     <Compile Include="Mode\ECoreType.cs" />
@@ -475,6 +476,9 @@
     <None Include="Resources\minimize.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\http-tool.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\NotifyIcon1.ico" />
     <Content Include="Resources\NotifyIcon2.ico" />
     <Content Include="Resources\NotifyIcon3.ico" />

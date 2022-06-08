@@ -44,6 +44,7 @@ namespace v2rayN.Forms
                 txtUrl.Text = subItem.url.ToString();
                 chkEnabled.Checked = subItem.enabled;
                 txtUserAgent.Text = subItem.userAgent;
+                chkForceParsing.Checked = subItem.forceParsing;
 
                 var index = groupItem.FindIndex(t => t.id == subItem.groupId);
                 if (index >= 0)
@@ -60,6 +61,7 @@ namespace v2rayN.Forms
                 subItem.url = txtUrl.Text.TrimEx();
                 subItem.enabled = chkEnabled.Checked;
                 subItem.userAgent = txtUserAgent.Text.TrimEx();
+                subItem.forceParsing = chkForceParsing.Checked;
 
                 var index = groupItem.FindIndex(t => t.remarks == cmbGroup.Text);
                 if (index >= 0)
@@ -104,6 +106,11 @@ namespace v2rayN.Forms
             {
                 this.Height = grbMain.Height;
             }
+        }
+
+        private void chkForceParsing_CheckStateChanged(object sender, EventArgs e)
+        {
+            EndBindingSub();
         }
     }
 }

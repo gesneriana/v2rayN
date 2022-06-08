@@ -42,13 +42,14 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.picQRCode = new System.Windows.Forms.PictureBox();
+            this.chkForceParsing = new System.Windows.Forms.CheckBox();
             this.grbMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picQRCode)).BeginInit();
             this.SuspendLayout();
             // 
             // grbMain
             // 
-            resources.ApplyResources(this.grbMain, "grbMain");
+            this.grbMain.Controls.Add(this.chkForceParsing);
             this.grbMain.Controls.Add(this.label4);
             this.grbMain.Controls.Add(this.cmbGroup);
             this.grbMain.Controls.Add(this.txtUserAgent);
@@ -60,6 +61,7 @@
             this.grbMain.Controls.Add(this.txtRemarks);
             this.grbMain.Controls.Add(this.label2);
             this.grbMain.Controls.Add(this.label3);
+            resources.ApplyResources(this.grbMain, "grbMain");
             this.grbMain.Name = "grbMain";
             this.grbMain.TabStop = false;
             // 
@@ -70,9 +72,9 @@
             // 
             // cmbGroup
             // 
-            resources.ApplyResources(this.cmbGroup, "cmbGroup");
             this.cmbGroup.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbGroup.FormattingEnabled = true;
+            resources.ApplyResources(this.cmbGroup, "cmbGroup");
             this.cmbGroup.Name = "cmbGroup";
             this.cmbGroup.Leave += new System.EventHandler(this.txtRemarks_Leave);
             // 
@@ -136,6 +138,13 @@
             this.picQRCode.Name = "picQRCode";
             this.picQRCode.TabStop = false;
             // 
+            // chkForceParsing
+            // 
+            resources.ApplyResources(this.chkForceParsing, "chkForceParsing");
+            this.chkForceParsing.Name = "chkForceParsing";
+            this.chkForceParsing.UseVisualStyleBackColor = true;
+            this.chkForceParsing.CheckStateChanged += new System.EventHandler(this.chkForceParsing_CheckStateChanged);
+            // 
             // SubSettingControl
             // 
             resources.ApplyResources(this, "$this");
@@ -166,5 +175,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox cmbGroup;
+        private System.Windows.Forms.CheckBox chkForceParsing;
     }
 }

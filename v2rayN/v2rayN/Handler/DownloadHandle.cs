@@ -134,14 +134,19 @@ namespace v2rayN.Handler
         /// DownloadString
         /// </summary> 
         /// <param name="url"></param>
-        public async Task<string> DownloadStringAsync(string url, bool blProxy, string userAgent)
+        public async Task<string> DownloadStringAsync(string url, bool blProxy, string userAgent, bool forceProxy = false)
         {
             try
             {
                 Utils.SetSecurityProtocol(LazyConfig.Instance.GetConfig().enableSecurityProtocolTls13);
+                var webProxy = GetWebProxy(blProxy);
+                if (forceProxy && webProxy == null)
+                {
+                    return String.Empty;    // If the renewal subscription uses Google's DNS service to resolve domain names, then the proxy must be enforced
+                }
                 var client = new HttpClient(new WebRequestHandler()
                 {
-                    Proxy = GetWebProxy(blProxy)
+                    Proxy = webProxy
                 });
 
                 if (Utils.IsNullOrEmpty(userAgent))
