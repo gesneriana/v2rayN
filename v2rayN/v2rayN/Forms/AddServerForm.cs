@@ -16,14 +16,14 @@ namespace v2rayN.Forms
 
         private void AddServerForm_Load(object sender, EventArgs e)
         {
-            this.Text = (eConfigType).ToString();
+            Text = (eConfigType).ToString();
             
             cmbCoreType.Items.AddRange(Global.coreTypes.ToArray());
             cmbCoreType.Items.Add(string.Empty);
 
             switch (eConfigType)
             {
-                case EConfigType.Vmess:
+                case EConfigType.VMess:
                     panVmess.Dock = DockStyle.Fill;
                     panVmess.Visible = true;
 
@@ -32,8 +32,8 @@ namespace v2rayN.Forms
                 case EConfigType.Shadowsocks:
                     panSs.Dock = DockStyle.Fill;
                     panSs.Visible = true;
-                    panTran.Visible = false;
-                    this.Height = this.Height - panTran.Height;
+                    //panTran.Visible = false;
+                    //this.Height = this.Height - panTran.Height;
 
                     cmbSecurity3.Items.AddRange(LazyConfig.Instance.GetShadowsocksSecuritys().ToArray());
                     break;
@@ -41,7 +41,7 @@ namespace v2rayN.Forms
                     panSocks.Dock = DockStyle.Fill;
                     panSocks.Visible = true;
                     panTran.Visible = false;
-                    this.Height = this.Height - panTran.Height;
+                    Height = Height - panTran.Height;
                     break;
                 case EConfigType.VLESS:
                     panVless.Dock = DockStyle.Fill;
@@ -65,8 +65,10 @@ namespace v2rayN.Forms
             }
             else
             {
-                vmessItem = new VmessItem();
-                vmessItem.groupId = groupId;
+                vmessItem = new VmessItem
+                {
+                    groupId = groupId
+                };
                 ClearServer();
             }
         }
@@ -82,7 +84,7 @@ namespace v2rayN.Forms
 
             switch (eConfigType)
             {
-                case EConfigType.Vmess:
+                case EConfigType.VMess:
                     txtId.Text = vmessItem.id;
                     txtAlterId.Text = vmessItem.alterId.ToString();
                     cmbSecurity.Text = vmessItem.security;
@@ -106,14 +108,7 @@ namespace v2rayN.Forms
                     break;
             }
 
-            if (vmessItem.coreType == null)
-            {
-                cmbCoreType.Text = string.Empty;
-            }
-            else
-            {
-                cmbCoreType.Text = vmessItem.coreType.ToString();
-            }
+            cmbCoreType.Text = vmessItem.coreType == null ? string.Empty : vmessItem.coreType.ToString();
 
             transportControl.BindingServer(vmessItem);
         }
@@ -129,7 +124,7 @@ namespace v2rayN.Forms
 
             switch (eConfigType)
             {
-                case EConfigType.Vmess:
+                case EConfigType.VMess:
                     txtId.Text = "";
                     txtAlterId.Text = "0";
                     cmbSecurity.Text = Global.DefaultSecurity;
@@ -169,7 +164,7 @@ namespace v2rayN.Forms
 
             switch (eConfigType)
             {
-                case EConfigType.Vmess:
+                case EConfigType.VMess:
                     id = txtId.Text;
                     alterId = txtAlterId.Text;
                     security = cmbSecurity.Text;
@@ -246,7 +241,7 @@ namespace v2rayN.Forms
             int ret = -1;
             switch (eConfigType)
             {
-                case EConfigType.Vmess:
+                case EConfigType.VMess:
                     ret = ConfigHandler.AddServer(ref config, vmessItem);
                     break;
                 case EConfigType.Shadowsocks:
@@ -267,7 +262,7 @@ namespace v2rayN.Forms
 
             if (ret == 0)
             {
-                this.DialogResult = DialogResult.OK;
+                DialogResult = DialogResult.OK;
             }
             else
             {
@@ -284,7 +279,7 @@ namespace v2rayN.Forms
 
         private void btnClose_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
+            DialogResult = DialogResult.Cancel;
         }
     }
 }

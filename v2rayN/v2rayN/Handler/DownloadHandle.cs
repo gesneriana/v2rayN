@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,8 +30,8 @@ namespace v2rayN.Handler
 
             public ResultEventArgs(bool success, string msg)
             {
-                this.Success = success;
-                this.Msg = msg;
+                Success = success;
+                Msg = msg;
             }
         }
 
@@ -51,7 +52,7 @@ namespace v2rayN.Handler
                 {
                     if (UpdateCompleted != null)
                     {
-                        string msg = string.Format("{0} M/s", value).PadLeft(9, ' ');
+                        string msg = $"{value} M/s".PadLeft(9, ' ');
                         UpdateCompleted(this, new ResultEventArgs(false, msg));
                     }
                 };
@@ -66,7 +67,11 @@ namespace v2rayN.Handler
             catch (Exception ex)
             {
                 //Utils.SaveLog(ex.Message, ex);
-                Error?.Invoke(this, new ErrorEventArgs(ex));
+                Error?.Invoke(this, new ErrorEventArgs(ex)); 
+                if (ex.InnerException != null)
+                {
+                    Error?.Invoke(this, new ErrorEventArgs(ex.InnerException));
+                }
             }
             return 0;
         }
@@ -88,7 +93,7 @@ namespace v2rayN.Handler
                 {
                     if (UpdateCompleted != null)
                     {
-                        string msg = string.Format("...{0}%", value);
+                        string msg = $"...{value}%";
                         UpdateCompleted(this, new ResultEventArgs(value > 100 ? true : false, msg));
                     }
                 };
@@ -104,7 +109,11 @@ namespace v2rayN.Handler
             {
                 Utils.SaveLog(ex.Message, ex);
 
-                Error?.Invoke(this, new ErrorEventArgs(ex));
+                Error?.Invoke(this, new ErrorEventArgs(ex)); 
+                if (ex.InnerException != null)
+                {
+                    Error?.Invoke(this, new ErrorEventArgs(ex.InnerException));
+                }
             }
         }
 
@@ -171,6 +180,11 @@ namespace v2rayN.Handler
             catch (Exception ex)
             {
                 Utils.SaveLog(ex.Message, ex);
+                Error?.Invoke(this, new ErrorEventArgs(ex));
+                if (ex.InnerException != null)
+                {
+                    Error?.Invoke(this, new ErrorEventArgs(ex.InnerException));
+                }
             }
             return null;
         }
@@ -211,7 +225,7 @@ namespace v2rayN.Handler
             try
             {
                 HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
-                myHttpWebRequest.Timeout = 5000;
+                myHttpWebRequest.Timeout = 30 * 1000;
                 myHttpWebRequest.Proxy = webProxy;
 
                 Stopwatch timer = new Stopwatch();
@@ -243,13 +257,35 @@ namespace v2rayN.Handler
                 return null;
             }
             var httpPort = LazyConfig.Instance.GetConfig().GetLocalPort(Global.InboundHttp);
-            var webProxy = new WebProxy(Global.Loopback, httpPort);
-            if (RunAvailabilityCheck(webProxy) > 0)
+            if (!SocketCheck(Global.Loopback, httpPort))
             {
-                return webProxy;
+                return null;
             }
 
-            return null;
+            return new WebProxy(Global.Loopback, httpPort);
+        }
+
+        private bool SocketCheck(string ip, int port)
+        {
+            Socket sock = null;
+            try
+            {
+                IPAddress ipa = IPAddress.Parse(ip);
+                IPEndPoint point = new IPEndPoint(ipa, port);
+                sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                sock.Connect(point);
+                return true;
+            }
+            catch { }
+            finally
+            {
+                if (sock != null)
+                {
+                    sock.Close();
+                    sock.Dispose();
+                }
+            }
+            return false;
         }
     }
 }

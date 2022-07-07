@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows.Forms;
 using v2rayN.Base;
 using v2rayN.Handler;
@@ -115,34 +116,33 @@ namespace v2rayN.Forms
         private void btnOK_Click(object sender, EventArgs e)
         {
             EndBindingData();
-            var hasRule = false;
-            if (rulesItem.domain != null && rulesItem.domain.Count > 0)
-            {
-                hasRule = true;
-            }
-            if (rulesItem.ip != null && rulesItem.ip.Count > 0)
-            {
-                hasRule = true;
-            }
-            if (rulesItem.protocol != null && rulesItem.protocol.Count > 0)
-            {
-                hasRule = true;
-            }
-            if (!Utils.IsNullOrEmpty(rulesItem.port))
-            {
-                hasRule = true;
-            }
+
+            bool hasRule = 
+                rulesItem.domain != null 
+                && rulesItem.domain.Count > 0 
+                || rulesItem.ip != null 
+                && rulesItem.ip.Count > 0 
+                || rulesItem.protocol != null 
+                && rulesItem.protocol.Count > 0 
+                || !Utils.IsNullOrEmpty(rulesItem.port);
+
             if (!hasRule)
             {
                 UI.ShowWarning(string.Format(ResUI.RoutingRuleDetailRequiredTips, "Port/Protocol/Domain/IP"));
                 return;
             }
-            this.DialogResult = DialogResult.OK;
+
+            DialogResult = DialogResult.OK;
         }
 
         private void btnClose_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
+            DialogResult = DialogResult.Cancel;
+        }
+
+        private void linkRuleobjectDoc_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("https://www.v2fly.org/config/routing.html#ruleobject");
         }
     }
 }

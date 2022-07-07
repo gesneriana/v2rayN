@@ -26,7 +26,7 @@ namespace v2rayN.Forms
 
         private void SubSettingControl_Load(object sender, EventArgs e)
         {
-            this.Height = grbMain.Height;
+            Height = grbMain.Height;
 
             groupItem = LazyConfig.Instance.GetConfig().groupItem;
 
@@ -92,7 +92,7 @@ namespace v2rayN.Forms
 
         private void btnShare_Click(object sender, EventArgs e)
         {
-            if (this.Height <= grbMain.Height)
+            if (Height <= grbMain.Height)
             {
                 if (Utils.IsNullOrEmpty(subItem.url))
                 {
@@ -100,11 +100,11 @@ namespace v2rayN.Forms
                     return;
                 }
                 picQRCode.Image = QRCodeHelper.GetQRCode(subItem.url);
-                this.Height = grbMain.Height + 200;
+                Height = grbMain.Height + 200;
             }
             else
             {
-                this.Height = grbMain.Height;
+                Height = grbMain.Height;
             }
         }
 

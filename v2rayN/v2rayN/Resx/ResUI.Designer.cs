@@ -106,7 +106,7 @@ namespace v2rayN.Resx {
         }
         
         /// <summary>
-        ///   查找类似  configuration format is incorrect 的本地化字符串。
+        ///   查找类似 Invalid configuration format 的本地化字符串。
         /// </summary>
         internal static string ConfigurationFormatIncorrect {
             get {
@@ -133,7 +133,7 @@ namespace v2rayN.Resx {
         }
         
         /// <summary>
-        ///   查找类似 DOWN 的本地化字符串。
+        ///   查找类似 Download 的本地化字符串。
         /// </summary>
         internal static string downloadSpeed {
             get {
@@ -439,7 +439,7 @@ namespace v2rayN.Resx {
         }
         
         /// <summary>
-        ///   查找类似 Today download traffic 的本地化字符串。
+        ///   查找类似 Download traffic today 的本地化字符串。
         /// </summary>
         internal static string LvTodayDownloadDataAmount {
             get {
@@ -448,7 +448,7 @@ namespace v2rayN.Resx {
         }
         
         /// <summary>
-        ///   查找类似 Today upload traffic 的本地化字符串。
+        ///   查找类似 Upload traffic today 的本地化字符串。
         /// </summary>
         internal static string LvTodayUploadDataAmount {
             get {
@@ -493,7 +493,7 @@ namespace v2rayN.Resx {
         }
         
         /// <summary>
-        ///   查找类似 MediumFresh 的本地化字符串。
+        ///   查找类似 Medium 的本地化字符串。
         /// </summary>
         internal static string MediumFresh {
             get {
@@ -538,7 +538,7 @@ namespace v2rayN.Resx {
         }
         
         /// <summary>
-        ///   查找类似 Get the subscription content successfully 的本地化字符串。
+        ///   查找类似 Get subscription content successfully 的本地化字符串。
         /// </summary>
         internal static string MsgGetSubscriptionSuccessfully {
             get {
@@ -547,7 +547,7 @@ namespace v2rayN.Resx {
         }
         
         /// <summary>
-        ///   查找类似 Informations (Filter : {0}) 的本地化字符串。
+        ///   查找类似 Information (Filter : {0}) 的本地化字符串。
         /// </summary>
         internal static string MsgInformationTitle {
             get {
@@ -709,7 +709,7 @@ namespace v2rayN.Resx {
         }
         
         /// <summary>
-        ///   查找类似 Non-vmess or ss protocol 的本地化字符串。
+        ///   查找类似 Non-VMess or ss protocol 的本地化字符串。
         /// </summary>
         internal static string NonvmessOrssProtocol {
             get {
@@ -718,7 +718,7 @@ namespace v2rayN.Resx {
         }
         
         /// <summary>
-        ///   查找类似  non-Vmess service, this feature is invalid 的本地化字符串。
+        ///   查找类似  non-standard service, this feature is invalid 的本地化字符串。
         /// </summary>
         internal static string NonVmessService {
             get {
@@ -745,7 +745,7 @@ namespace v2rayN.Resx {
         }
         
         /// <summary>
-        ///   查找类似  operation failed, please check retry 的本地化字符串。
+        ///   查找类似  operation failed, please check and retry 的本地化字符串。
         /// </summary>
         internal static string OperationFailed {
             get {
@@ -781,7 +781,7 @@ namespace v2rayN.Resx {
         }
         
         /// <summary>
-        ///   查找类似 Please select an agreement 的本地化字符串。
+        ///   查找类似 Please select a protocol 的本地化字符串。
         /// </summary>
         internal static string PleaseSelectProtocol {
             get {
@@ -808,7 +808,7 @@ namespace v2rayN.Resx {
         }
         
         /// <summary>
-        ///   查找类似 QuickFresh 的本地化字符串。
+        ///   查找类似 Fast 的本地化字符串。
         /// </summary>
         internal static string QuickFresh {
             get {
@@ -889,7 +889,7 @@ namespace v2rayN.Resx {
         }
         
         /// <summary>
-        ///   查找类似 SlowFresh 的本地化字符串。
+        ///   查找类似 Slow 的本地化字符串。
         /// </summary>
         internal static string SlowFresh {
             get {
@@ -898,7 +898,7 @@ namespace v2rayN.Resx {
         }
         
         /// <summary>
-        ///   查找类似 Note: After this function relies on the Http global proxy test, please manually adjust the Http global proxy and active node! 的本地化字符串。
+        ///   查找类似 Note: This feature relies on the Http global proxy. Please manually adjust the Http global proxy and active node after testing. 的本地化字符串。
         /// </summary>
         internal static string SpeedServerTips {
             get {
@@ -916,7 +916,7 @@ namespace v2rayN.Resx {
         }
         
         /// <summary>
-        ///   查找类似 PAC failed to start. Run it with Admin right. 的本地化字符串。
+        ///   查找类似 PAC failed to start. Please run this program as Administrator. 的本地化字符串。
         /// </summary>
         internal static string StartPacFailed {
             get {
@@ -934,7 +934,7 @@ namespace v2rayN.Resx {
         }
         
         /// <summary>
-        ///   查找类似 Successful configuration
+        ///   查找类似 Configuration successful
         ///{0} 的本地化字符串。
         /// </summary>
         internal static string SuccessfulConfiguration {
@@ -944,7 +944,7 @@ namespace v2rayN.Resx {
         }
         
         /// <summary>
-        ///   查找类似 Successfully imported custom configuration server 的本地化字符串。
+        ///   查找类似 Custom configuration server imported successfully. 的本地化字符串。
         /// </summary>
         internal static string SuccessfullyImportedCustomServer {
             get {

@@ -31,7 +31,7 @@ namespace v2rayN.Handler
 
                 switch (item.configType)
                 {
-                    case EConfigType.Vmess:
+                    case EConfigType.VMess:
                         url = ShareVmess(item);
                         break;
                     case EConfigType.Shadowsocks:
@@ -51,8 +51,9 @@ namespace v2rayN.Handler
                 }
                 return url;
             }
-            catch
+            catch (Exception ex)
             {
+                Utils.SaveLog(ex.Message, ex);
                 return "";
             }
         }
@@ -81,7 +82,7 @@ namespace v2rayN.Handler
 
             url = Utils.ToJson(vmessQRCode);
             url = Utils.Base64Encode(url);
-            url = string.Format("{0}{1}", Global.vmessProtocol, url);
+            url = $"{Global.vmessProtocol}{url}";
 
             return url;
         }
@@ -104,7 +105,7 @@ namespace v2rayN.Handler
             //new Sip002
             var pw = Utils.Base64Encode($"{item.security}:{item.id}");
             url = $"{pw}@{GetIpv6(item.address)}:{ item.port}";
-            url = string.Format("{0}{1}{2}", Global.ssProtocol, url, remark);
+            url = $"{Global.ssProtocol}{url}{remark}";
             return url;
         }
 
@@ -125,7 +126,7 @@ namespace v2rayN.Handler
             //new
             var pw = Utils.Base64Encode($"{item.security}:{item.id}");
             url = $"{pw}@{GetIpv6(item.address)}:{ item.port}";
-            url = string.Format("{0}{1}{2}", Global.socksProtocol, url, remark);
+            url = $"{Global.socksProtocol}{url}{remark}";
             return url;
         }
 
@@ -145,7 +146,7 @@ namespace v2rayN.Handler
             item.id,
             GetIpv6(item.address),
             item.port);
-            url = string.Format("{0}{1}{2}{3}", Global.trojanProtocol, url, query, remark);
+            url = $"{Global.trojanProtocol}{url}{query}{remark}";
             return url;
         }
 
@@ -173,7 +174,7 @@ namespace v2rayN.Handler
             item.id,
             GetIpv6(item.address),
             item.port);
-            url = string.Format("{0}{1}{2}{3}", Global.vlessProtocol, url, query, remark);
+            url = $"{Global.vlessProtocol}{url}{query}{remark}";
             return url;
         }
         private static string GetIpv6(string address)
@@ -207,40 +208,20 @@ namespace v2rayN.Handler
             {
                 dicQuery.Add("alpn", Utils.UrlEncode(Utils.List2String(item.alpn)));
             }
-            if (!Utils.IsNullOrEmpty(item.network))
-            {
-                dicQuery.Add("type", item.network);
-            }
-            else
-            {
-                dicQuery.Add("type", "tcp");
-            }
+
+            dicQuery.Add("type", !Utils.IsNullOrEmpty(item.network) ? item.network : "tcp");
 
             switch (item.network)
             {
                 case "tcp":
-                    if (!Utils.IsNullOrEmpty(item.headerType))
-                    {
-                        dicQuery.Add("headerType", item.headerType);
-                    }
-                    else
-                    {
-                        dicQuery.Add("headerType", "none");
-                    }
+                    dicQuery.Add("headerType", !Utils.IsNullOrEmpty(item.headerType) ? item.headerType : "none");
                     if (!Utils.IsNullOrEmpty(item.requestHost))
                     {
                         dicQuery.Add("host", Utils.UrlEncode(item.requestHost));
                     }
                     break;
                 case "kcp":
-                    if (!Utils.IsNullOrEmpty(item.headerType))
-                    {
-                        dicQuery.Add("headerType", item.headerType);
-                    }
-                    else
-                    {
-                        dicQuery.Add("headerType", "none");
-                    }
+                    dicQuery.Add("headerType", !Utils.IsNullOrEmpty(item.headerType) ? item.headerType : "none");
                     if (!Utils.IsNullOrEmpty(item.path))
                     {
                         dicQuery.Add("seed", Utils.UrlEncode(item.path));
@@ -272,14 +253,7 @@ namespace v2rayN.Handler
                     break;
 
                 case "quic":
-                    if (!Utils.IsNullOrEmpty(item.headerType))
-                    {
-                        dicQuery.Add("headerType", item.headerType);
-                    }
-                    else
-                    {
-                        dicQuery.Add("headerType", "none");
-                    }
+                    dicQuery.Add("headerType", !Utils.IsNullOrEmpty(item.headerType) ? item.headerType : "none");
                     dicQuery.Add("quicSecurity", Utils.UrlEncode(item.requestHost));
                     dicQuery.Add("key", Utils.UrlEncode(item.path));
                     break;
@@ -341,11 +315,7 @@ namespace v2rayN.Handler
                 {
                     msg = ResUI.ConfigurationFormatIncorrect;
 
-                    vmessItem = ResolveSSLegacy(result);
-                    if (vmessItem == null)
-                    {
-                        vmessItem = ResolveSip002(result);
-                    }
+                    vmessItem = ResolveSSLegacy(result) ?? ResolveSip002(result);
                     if (vmessItem == null)
                     {
                         return null;
@@ -361,11 +331,7 @@ namespace v2rayN.Handler
                 {
                     msg = ResUI.ConfigurationFormatIncorrect;
 
-                    vmessItem = ResolveSocksNew(result);
-                    if (vmessItem == null)
-                    {
-                        vmessItem = ResolveSocks(result);
-                    }
+                    vmessItem = ResolveSocksNew(result) ?? ResolveSocks(result);
                     if (vmessItem == null)
                     {
                         return null;
@@ -395,8 +361,9 @@ namespace v2rayN.Handler
                     return null;
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                Utils.SaveLog(ex.Message, ex);
                 msg = ResUI.Incorrectconfiguration;
                 return null;
             }
@@ -407,9 +374,11 @@ namespace v2rayN.Handler
         private static VmessItem ResolveVmess(string result, out string msg)
         {
             msg = string.Empty;
-            VmessItem vmessItem = new VmessItem();
+            var vmessItem = new VmessItem
+            {
+                configType = EConfigType.VMess
+            };
 
-            vmessItem.configType = EConfigType.Vmess;
             result = result.Substring(Global.vmessProtocol.Length);
             result = Utils.Base64Decode(result);
 
@@ -432,14 +401,7 @@ namespace v2rayN.Handler
             vmessItem.alterId = Utils.ToInt(vmessQRCode.aid);
             vmessItem.security = Utils.ToString(vmessQRCode.scy);
 
-            if (!Utils.IsNullOrEmpty(vmessQRCode.scy))
-            {
-                vmessItem.security = vmessQRCode.scy;
-            }
-            else
-            {
-                vmessItem.security = Global.DefaultSecurity;
-            }
+            vmessItem.security = !Utils.IsNullOrEmpty(vmessQRCode.scy) ? vmessQRCode.scy : Global.DefaultSecurity;
             if (!Utils.IsNullOrEmpty(vmessQRCode.net))
             {
                 vmessItem.network = vmessQRCode.net;
@@ -462,7 +424,7 @@ namespace v2rayN.Handler
         {
             VmessItem vmessItem = new VmessItem
             {
-                configType = EConfigType.Vmess
+                configType = EConfigType.VMess
             };
             result = result.Substring(Global.vmessProtocol.Length);
             int indexSplit = result.IndexOf("?");
@@ -500,7 +462,7 @@ namespace v2rayN.Handler
         {
             VmessItem i = new VmessItem
             {
-                configType = EConfigType.Vmess,
+                configType = EConfigType.VMess,
                 security = "auto"
             };
 
@@ -598,7 +560,7 @@ namespace v2rayN.Handler
             //2022-blake3
             if (rawUserInfo.Contains(":"))
             {
-                string[] userInfoParts = rawUserInfo.Split(new char[] { ':' }, 2);
+                string[] userInfoParts = rawUserInfo.Split(new[] { ':' }, 2);
                 if (userInfoParts.Length != 2)
                 {
                     return null;
@@ -610,7 +572,7 @@ namespace v2rayN.Handler
             {
                 // parse base64 UserInfo
                 string userInfo = Utils.Base64Decode(rawUserInfo);
-                string[] userInfoParts = userInfo.Split(new char[] { ':' }, 2);
+                string[] userInfoParts = userInfo.Split(new[] { ':' }, 2);
                 if (userInfoParts.Length != 2)
                 {
                     return null;
@@ -622,7 +584,19 @@ namespace v2rayN.Handler
             NameValueCollection queryParameters = HttpUtility.ParseQueryString(parsedUrl.Query);
             if (queryParameters["plugin"] != null)
             {
-                return null;
+                //obfs-host exists
+                var obfsHost = queryParameters["plugin"].Split(';').FirstOrDefault(t => t.Contains("obfs-host"));
+                if (queryParameters["plugin"].Contains("obfs=http") && !Utils.IsNullOrEmpty(obfsHost))
+                {
+                    obfsHost = obfsHost.Replace("obfs-host=", "");
+                    server.network = Global.DefaultNetwork;
+                    server.headerType = Global.TcpHeaderHttp;
+                    server.requestHost = obfsHost;
+                }
+                else
+                {
+                    return null;
+                }
             }
 
             return server;
@@ -668,8 +642,10 @@ namespace v2rayN.Handler
 
         private static VmessItem ResolveSocks(string result)
         {
-            VmessItem vmessItem = new VmessItem();
-            vmessItem.configType = EConfigType.Socks;
+            VmessItem vmessItem = new VmessItem
+            {
+                configType = EConfigType.Socks
+            };
             result = result.Substring(Global.socksProtocol.Length);
             //remark
             int indexRemark = result.IndexOf("#");
@@ -733,7 +709,7 @@ namespace v2rayN.Handler
             // parse base64 UserInfo
             string rawUserInfo = parsedUrl.GetComponents(UriComponents.UserInfo, UriFormat.Unescaped);
             string userInfo = Utils.Base64Decode(rawUserInfo);
-            string[] userInfoParts = userInfo.Split(new char[] { ':' }, 2);
+            string[] userInfoParts = userInfo.Split(new[] { ':' }, 2);
             if (userInfoParts.Length == 2)
             {
                 server.security = userInfoParts[0];
