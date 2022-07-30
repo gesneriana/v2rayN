@@ -22,14 +22,18 @@ namespace v2rayN.Handler
             return _config;
         }
 
-        public List<string> GetShadowsocksSecuritys()
+        public List<string> GetShadowsocksSecuritys(VmessItem vmessItem)
         {
-            if (GetCoreType(null, EConfigType.Shadowsocks) == ECoreType.v2fly)
+            if (GetCoreType(vmessItem, EConfigType.Shadowsocks) == ECoreType.v2fly)
             {
                 return Global.ssSecuritys;
             }
+            if (GetCoreType(vmessItem, EConfigType.Shadowsocks) == ECoreType.Xray)
+            {
+                return Global.ssSecuritysInXray;
+            }        
 
-            return Global.ssSecuritysInXray;
+            return Global.ssSecuritysInSagerNet;
         }
 
         public ECoreType GetCoreType(VmessItem vmessItem, EConfigType eConfigType)
@@ -82,7 +86,21 @@ namespace v2rayN.Handler
                 coreLatestUrl = Global.v2flyCoreUrl + "/latest",
                 coreDownloadUrl32 = Global.v2flyCoreUrl + "/download/{0}/v2ray-windows-{1}.zip",
                 coreDownloadUrl64 = Global.v2flyCoreUrl + "/download/{0}/v2ray-windows-{1}.zip",
-                match = "V2Ray"
+                match = "V2Ray",
+                versionArg = "-version"
+            });
+
+            coreInfos.Add(new CoreInfo
+            {
+                coreType = ECoreType.SagerNet,
+                coreExes = new List<string> { "v2ray" },
+                arguments = "run",
+                coreUrl = Global.SagerNetCoreUrl,
+                coreLatestUrl = Global.SagerNetCoreUrl + "/latest",
+                coreDownloadUrl32 = Global.SagerNetCoreUrl + "/download/{0}/v2ray-windows-{1}.zip",
+                coreDownloadUrl64 = Global.SagerNetCoreUrl + "/download/{0}/v2ray-windows-{1}.zip",
+                match = "V2Ray",
+                versionArg = "version"
             });
 
             coreInfos.Add(new CoreInfo
@@ -94,7 +112,8 @@ namespace v2rayN.Handler
                 coreLatestUrl = Global.xrayCoreUrl + "/latest",
                 coreDownloadUrl32 = Global.xrayCoreUrl + "/download/{0}/Xray-windows-{1}.zip",
                 coreDownloadUrl64 = Global.xrayCoreUrl + "/download/{0}/Xray-windows-{1}.zip",
-                match = "Xray"
+                match = "Xray",
+                versionArg = "-version"
             });
 
             coreInfos.Add(new CoreInfo
@@ -106,18 +125,21 @@ namespace v2rayN.Handler
                 coreLatestUrl = Global.clashCoreUrl + "/latest",
                 coreDownloadUrl32 = Global.clashCoreUrl + "/download/{0}/clash-windows-386-{0}.zip",
                 coreDownloadUrl64 = Global.clashCoreUrl + "/download/{0}/clash-windows-amd64-{0}.zip",
-                match = "v"
+                match = "v",
+                versionArg = "-v"
             });
 
             coreInfos.Add(new CoreInfo
             {
                 coreType = ECoreType.clash_meta,
-                coreExes = new List<string> { "Clash.Meta-windows-amd64v1", "Clash.Meta-windows-amd64", "Clash.Meta-windows-amd64-compatible", "Clash.Meta-windows-386", "Clash.Meta", "clash" },
+                coreExes = new List<string> { "Clash.Meta-windows-amd64-compatible", "Clash.Meta-windows-amd64", "Clash.Meta-windows-386", "Clash.Meta", "clash" },
                 arguments = "-f config.json",
                 coreUrl = Global.clashMetaCoreUrl,
                 coreLatestUrl = Global.clashMetaCoreUrl + "/latest",
                 coreDownloadUrl32 = Global.clashMetaCoreUrl + "/download/{0}/Clash.Meta-windows-386-{0}.zip",
                 coreDownloadUrl64 = Global.clashMetaCoreUrl + "/download/{0}/Clash.Meta-windows-amd64-compatible-{0}.zip",
+                match = "v",
+                versionArg = "-v"
             });
 
             coreInfos.Add(new CoreInfo
@@ -137,6 +159,14 @@ namespace v2rayN.Handler
                 coreExes = new List<string> { "naiveproxy", "naive" },
                 arguments = "config.json",
                 coreUrl = Global.naiveproxyCoreUrl
+            });
+
+            coreInfos.Add(new CoreInfo
+            {
+                coreType = ECoreType.tuic,
+                coreExes = new List<string> { "tuic-client", "tuic" },
+                arguments = "-c config.json",
+                coreUrl = Global.tuicCoreUrl
             });
         }
 

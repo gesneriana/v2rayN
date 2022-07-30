@@ -87,6 +87,12 @@ namespace v2rayN.Forms
             MainFormHandler.Instance.RegisterGlobalHotkey(config, OnHotkeyHandler, UpdateTaskHandler);
 
             _ = LoadV2ray();
+
+            if (!Utils.CheckForDotNetVersion())
+            {
+                UI.ShowWarning(ResUI.NetFrameworkRequirementsTip);
+                AppendText(false, ResUI.NetFrameworkRequirementsTip);
+            }
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -340,7 +346,7 @@ namespace v2rayN.Forms
             if (index >= 0 && index < lvServers.Items.Count && lvServers.Items.Count > 0)
             {
                 lvServers.Items[index].Selected = true;
-                lvServers.EnsureVisible(index); // workaround
+                lvServers.SetScrollPosition(index);
             }
         }
 
@@ -932,7 +938,23 @@ namespace v2rayN.Forms
             }
             if (ConfigHandler.SetDefaultServer(ref config, lstVmess[index]) == 0)
             {
-                RefreshServers();
+                //RefreshServers();
+                for (int k = 0; k < lstVmess.Count; k++)
+                {
+                    if (config.IsActiveNode(lstVmess[k]))
+                    {
+                        lvServers.Items[k].SubItems[0].Text = "√";
+                        lvServers.Items[k].ForeColor = Color.DodgerBlue;
+                        lvServers.Items[k].Font = new Font(lvServers.Font, FontStyle.Bold);
+                    }
+                    else
+                    {
+                        lvServers.Items[k].SubItems[0].Text = "";
+                        lvServers.Items[k].ForeColor = lvServers.ForeColor;
+                        lvServers.Items[k].Font = new Font(lvServers.Font, FontStyle.Regular);
+                    }
+                }
+                RefreshServersMenu();
                 _ = LoadV2ray();
             }
             return 0;
@@ -1082,7 +1104,7 @@ namespace v2rayN.Forms
         /// <param name="msg"></param>
         private void notifyMsg(string msg)
         {
-            notifyMain.Text = msg;
+            notifyMain.Text = (msg.Length <= 63 ? msg : msg.Substring(1, 63));
         }
 
         #endregion
@@ -1123,7 +1145,7 @@ namespace v2rayN.Forms
             if (index >= 0 && index < lvServers.Items.Count && lvServers.Items.Count > 0)
             {
                 lvServers.Items[index].Selected = true;
-                lvServers.EnsureVisible(index); // workaround
+                lvServers.SetScrollPosition(index); 
             }
 
             SetVisibleCore(true);
@@ -1340,6 +1362,11 @@ namespace v2rayN.Forms
         private void tsbCheckUpdateCore_Click(object sender, EventArgs e)
         {
             CheckUpdateCore(ECoreType.v2fly);
+        }
+
+        private void tsbCheckUpdateSagerNetCore_Click(object sender, EventArgs e)
+        {
+            CheckUpdateCore(ECoreType.SagerNet);
         }
 
         private void tsbCheckUpdateXrayCore_Click(object sender, EventArgs e)

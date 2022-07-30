@@ -85,6 +85,14 @@ namespace v2rayN.Mode
         }
 
         /// <summary>
+        /// Outbound Freedom domainStrategy
+        /// </summary>
+        public string domainStrategy4Freedom
+        {
+            get; set;
+        }
+
+        /// <summary>
         /// 是否允许不安全连接
         /// </summary>
         public bool defAllowInsecure
@@ -553,7 +561,13 @@ namespace v2rayN.Mode
         {
             get; set;
         } = string.Empty;
+
         public ECoreType? coreType
+        {
+            get; set;
+        }
+
+        public int preSocksPort
         {
             get; set;
         }

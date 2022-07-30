@@ -95,10 +95,10 @@ namespace v2rayN.Handler
             {
                 config.domainStrategy = "IPIfNonMatch";
             }
-            if (Utils.IsNullOrEmpty(config.domainMatcher))
-            {
-                config.domainMatcher = "linear";
-            }
+            //if (Utils.IsNullOrEmpty(config.domainMatcher))
+            //{
+            //    config.domainMatcher = "linear";
+            //}
 
             //kcp
             if (config.kcpItem == null)
@@ -529,7 +529,7 @@ namespace v2rayN.Handler
             vmessItem.id = vmessItem.id.TrimEx();
             vmessItem.security = vmessItem.security.TrimEx();
 
-            if (!LazyConfig.Instance.GetShadowsocksSecuritys().Contains(vmessItem.security))
+            if (!LazyConfig.Instance.GetShadowsocksSecuritys(vmessItem).Contains(vmessItem.security))
             {
                 return -1;
             }
@@ -816,6 +816,7 @@ namespace v2rayN.Handler
                 && o.path == n.path
                 && o.streamSecurity == n.streamSecurity
                 && o.flow == n.flow
+                && o.sni == n.sni
                 && (!remarks || o.remarks == n.remarks);
         }
 
