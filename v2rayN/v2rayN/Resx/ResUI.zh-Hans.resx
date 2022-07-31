@@ -475,4 +475,10 @@
   <data name="NetFrameworkRequirementsTip" xml:space="preserve">
     <value>正常使用此版本需要.NET Framework 4.8，请更新后重启</value>
   </data>
+  <data name="TunMode" xml:space="preserve">
+    <value>tun模式</value>
+  </data>
+  <data name="TunSetting" xml:space="preserve">
+    <value>请先开启udp和流量探测</value>
+  </data>
 </root>

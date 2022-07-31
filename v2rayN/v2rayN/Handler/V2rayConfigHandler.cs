@@ -7,6 +7,7 @@ using System.Net.NetworkInformation;
 using v2rayN.Base;
 using v2rayN.Mode;
 using v2rayN.Resx;
+using v2rayN.Tool;
 
 namespace v2rayN.Handler
 {
@@ -199,6 +200,12 @@ namespace v2rayN.Handler
                 if (v2rayConfig.routing != null
                   && v2rayConfig.routing.rules != null)
                 {
+                    var ipTup = NetTool.GetGatewayIp();
+                    if (!string.IsNullOrEmpty(ipTup.Item2))
+                    {
+                        config.outboundIp = ipTup.Item2;
+                        v2rayConfig.routing.outboundIp = config.outboundIp;
+                    }
                     v2rayConfig.routing.domainStrategy = config.domainStrategy;
                     v2rayConfig.routing.domainMatcher = Utils.IsNullOrEmpty(config.domainMatcher) ? null : config.domainMatcher;
 

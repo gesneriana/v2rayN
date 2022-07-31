@@ -79,6 +79,9 @@
   <PropertyGroup>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -267,6 +270,7 @@
     <Compile Include="Tool\FileManager.cs" />
     <Compile Include="Tool\Job.cs" />
     <Compile Include="Tool\Logging.cs" />
+    <Compile Include="Tool\NetTool.cs" />
     <Compile Include="Tool\QueryableExtension.cs" />
     <Compile Include="Tool\UI.cs" />
     <Compile Include="Tool\Utils.cs" />
@@ -402,6 +406,7 @@
     <EmbeddedResource Include="app.config">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <None Include="app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

@@ -25,6 +25,7 @@ using log4net;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 
 namespace v2rayN
 {
@@ -1112,6 +1113,90 @@ namespace v2rayN
 
         #endregion
 
+        public static string ExecCmd(string args)
+        {
+            var output = string.Empty;
+            try
+            {
+                using (Process p = new Process())
+                {
+                    p.StartInfo.FileName = @"cmd.exe";//可执行程序路径
+                    p.StartInfo.Arguments = $"/c {args}";//参数以空格分隔，如果某个参数为空，可以传入""
+                    p.StartInfo.UseShellExecute = false;//是否使用操作系统shell启动
+                    p.StartInfo.CreateNoWindow = true;//不显示程序窗口
+                    p.StartInfo.RedirectStandardOutput = true;//由调用程序获取输出信息
+                    p.StartInfo.RedirectStandardInput = true;   //接受来自调用程序的输入信息
+                    p.StartInfo.RedirectStandardError = true;   //重定向标准错误输出
+                    p.Start();
+                    p.WaitForExit();
+                    //正常运行结束放回代码为0
+                    if (p.ExitCode != 0)
+                    {
+                        output = p.StandardError.ReadToEnd();
+                        output = output.ToString().Replace(Environment.NewLine, string.Empty);
+                        output = output.ToString().Replace("\n", string.Empty);
+                    }
+                    else
+                    {
+                        output = p.StandardOutput.ReadToEnd();
+                    }
+                }
+                Console.WriteLine(output);
+            }
+            catch (Exception ee)
+            {
+                Console.WriteLine(ee.Message);
+            }
+            return output;
+        }
+
+        /// <summary>
+        /// 在后台启动一个进程
+        /// </summary>
+        /// <param name="exe"></param>
+        /// <param name="args"></param>
+        public static void ExecAsync(string exe, string args)
+        {
+            Task.Factory.StartNew(() =>
+            {
+                try
+                {
+                    var output = string.Empty;
+                    using (Process p = new Process())
+                    {
+                        p.StartInfo.FileName = exe;//可执行程序路径
+                        p.StartInfo.Arguments = args;//参数以空格分隔，如果某个参数为空，可以传入""
+                        p.StartInfo.UseShellExecute = false;//是否使用操作系统shell启动
+                        p.StartInfo.CreateNoWindow = true;//不显示程序窗口
+#if DEBUG
+                        p.StartInfo.CreateNoWindow = false; //调试模式显示程序窗口
+#endif
+
+                        p.StartInfo.RedirectStandardOutput = false;//由调用程序获取输出信息
+                        p.StartInfo.RedirectStandardInput = false;   //接受来自调用程序的输入信息
+                        p.StartInfo.RedirectStandardError = false;   //重定向标准错误输出
+                        p.Start();
+                        p.WaitForExit();
+                        //正常运行结束放回代码为0
+                        if (p.ExitCode != 0)
+                        {
+                            output = p.StandardError.ReadToEnd();
+                            output = output.ToString().Replace(Environment.NewLine, string.Empty);
+                            output = output.ToString().Replace("\n", string.Empty);
+                        }
+                        else
+                        {
+                            output = p.StandardOutput.ReadToEnd();
+                        }
+                    }
+                    Console.WriteLine(output);
+                }
+                catch (Exception ee)
+                {
+                    Console.WriteLine(ee.Message);
+                }
+            });
+        }
 
         #region Windows API
 

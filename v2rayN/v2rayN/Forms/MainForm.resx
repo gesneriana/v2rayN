@@ -339,7 +339,7 @@
     <value>ImageAboveText</value>
   </data>
   <data name="cmsLv.Size" type="System.Drawing.Size, System.Drawing">
-    <value>356, 644</value>
+    <value>356, 622</value>
   </data>
   <data name="&gt;&gt;cmsLv.Name" xml:space="preserve">
     <value>cmsLv</value>
@@ -665,6 +665,12 @@
   <data name="toolStripSeparator2.Size" type="System.Drawing.Size, System.Drawing">
     <value>274, 6</value>
   </data>
+  <data name="menuTunMode.Size" type="System.Drawing.Size, System.Drawing">
+    <value>277, 22</value>
+  </data>
+  <data name="menuTunMode.Text" xml:space="preserve">
+    <value>TunMode</value>
+  </data>
   <data name="menuExit.Size" type="System.Drawing.Size, System.Drawing">
     <value>277, 22</value>
   </data>
@@ -672,7 +678,7 @@
     <value>Exit</value>
   </data>
   <data name="cmsMain.Size" type="System.Drawing.Size, System.Drawing">
-    <value>278, 192</value>
+    <value>278, 236</value>
   </data>
   <data name="&gt;&gt;cmsMain.Name" xml:space="preserve">
     <value>cmsMain</value>
@@ -844,6 +850,9 @@
   </data>
   <data name="tsbCheckUpdateSagerNetCore.Size" type="System.Drawing.Size, System.Drawing">
     <value>219, 22</value>
+  </data>
+  <data name="tsbCheckUpdateSagerNetCore.Text" xml:space="preserve">
+    <value>Update SagerNet Core</value>
   </data>
   <data name="tsbCheckUpdateXrayCore.Size" type="System.Drawing.Size, System.Drawing">
     <value>219, 22</value>
@@ -1289,6 +1298,12 @@
   <data name="&gt;&gt;toolStripSeparator2.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripSeparator, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="&gt;&gt;menuTunMode.Name" xml:space="preserve">
+    <value>menuTunMode</value>
+  </data>
+  <data name="&gt;&gt;menuTunMode.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="&gt;&gt;menuExit.Name" xml:space="preserve">
     <value>menuExit</value>
   </data>
@@ -1522,8 +1537,5 @@
   </data>
   <data name="&gt;&gt;$this.Type" xml:space="preserve">
     <value>v2rayN.Forms.BaseForm, v2rayN, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="tsbCheckUpdateSagerNetCore.Text" xml:space="preserve">
-    <value>Update SagerNet Core</value>
   </data>
 </root>

@@ -5,12 +5,14 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using v2rayN.Handler;
 using v2rayN.Mode;
 using v2rayN.Resx;
 using v2rayN.Tool;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
 namespace v2rayN.Forms
 {
@@ -1145,7 +1147,7 @@ namespace v2rayN.Forms
             if (index >= 0 && index < lvServers.Items.Count && lvServers.Items.Count > 0)
             {
                 lvServers.Items[index].Selected = true;
-                lvServers.SetScrollPosition(index); 
+                lvServers.SetScrollPosition(index);
             }
 
             SetVisibleCore(true);
@@ -1569,5 +1571,66 @@ namespace v2rayN.Forms
         }
         #endregion
 
+        /// <summary>
+        /// 开启tun代理, 如果已经开启则关闭
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void menuTunMode_Click(object sender, EventArgs e)
+        {
+            var tun2socksString = Utils.ExecCmd("tasklist | findstr tun2socks.exe");
+            if (tun2socksString.Contains("tun2socks.exe"))
+            {
+                Utils.ExecCmd("taskkill /f /im tun2socks.exe"); // 关闭tun代理
+                Console.WriteLine("CloseTun is success");
+            }
+            else
+            {
+                var item = config.inbound.Where(x => x.allowLANConn && x.protocol == "socks" && x.udpEnabled && x.sniffingEnabled).FirstOrDefault();
+                if (item != null)
+                {
+                    var ipTup = NetTool.GetGatewayIp();
+                    config.outboundIp = ipTup.Item2;
+
+                    Utils.ExecAsync("./tun2socks.exe", $"-device tun://v2rayn -proxy socks5://127.0.0.1:{item.localPort}");
+                    while (true)
+                    {
+                        Thread.Sleep(100);
+                        var result = Utils.ExecCmd("chcp 65001 & ipconfig");
+                        if (result.Contains("v2rayn"))
+                        {
+                            break;
+                        }
+                    }
+
+                    for (int i = 0; i < 10; i++)
+                    {
+                        var result = Utils.ExecCmd("chcp 65001 & ipconfig");
+                        if (result.Contains("10.0.68.10"))
+                        {
+                            break;
+                        }
+                        else if (result.Contains("169.254."))
+                        {
+                            // 请打开 windows系统的 计算机管理-设备管理器-网络适配器 卸载所有的 [WireGuard Tunnel] 虚拟网卡
+                            // https://docs.microsoft.com/zh-cn/troubleshoot/windows-server/networking/blank-default-gateway-configure-static-ip-address
+                            Console.WriteLine("请打开 windows系统的 计算机管理-设备管理器-网络适配器 卸载所有的 [WireGuard Tunnel] 虚拟网卡");
+                            Console.WriteLine("https://docs.microsoft.com/zh-cn/troubleshoot/windows-server/networking/blank-default-gateway-configure-static-ip-address");
+                            break;
+                        }
+                        else
+                        {
+                            // netsh interface ip set address v2raya static 10.0.68.10 255.255.255.0 10.0.68.1 3
+                            Utils.ExecCmd("netsh interface ip set address v2rayn static 10.0.68.10 255.255.255.0 10.0.68.1 3");
+                            Thread.Sleep(3000);
+                        }
+                    }
+                }
+                else
+                {
+                    UI.ShowWarning(ResUI.TunSetting);
+                }
+            }
+        }
     }
 }

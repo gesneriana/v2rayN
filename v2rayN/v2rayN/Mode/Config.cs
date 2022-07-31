@@ -158,6 +158,11 @@ namespace v2rayN.Mode
         }
 
         /// <summary>
+        /// 出站ip
+        /// </summary>
+        public string outboundIp { get; set; }
+
+        /// <summary>
         /// vmess服务器信息
         /// </summary>
         public List<VmessItem> vmess

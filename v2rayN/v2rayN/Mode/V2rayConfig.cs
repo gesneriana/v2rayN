@@ -353,6 +353,8 @@ namespace v2rayN.Mode
         /// 
         /// </summary>
         public List<RulesItem> rules { get; set; }
+
+        public string outboundIp { get; set; }
     }
 
     public class StreamSettings

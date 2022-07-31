@@ -475,4 +475,10 @@
   <data name="NetFrameworkRequirementsTip" xml:space="preserve">
     <value>Normal use of this version requires .NET Framework 4.8</value>
   </data>
+  <data name="TunMode" xml:space="preserve">
+    <value>Tun Mode</value>
+  </data>
+  <data name="TunSetting" xml:space="preserve">
+    <value>Please enable udp and traffic detection first</value>
+  </data>
 </root>

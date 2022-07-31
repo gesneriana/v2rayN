@@ -88,6 +88,7 @@
             this.menuUpdateSubscriptions = new System.Windows.Forms.ToolStripMenuItem();
             this.menuUpdateSubViaProxy = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.menuTunMode = new System.Windows.Forms.ToolStripMenuItem();
             this.menuExit = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
             this.tsMain = new System.Windows.Forms.ToolStrip();
@@ -491,6 +492,7 @@
             this.menuUpdateSubscriptions,
             this.menuUpdateSubViaProxy,
             this.toolStripSeparator2,
+            this.menuTunMode,
             this.menuExit});
             this.cmsMain.Name = "contextMenuStrip1";
             this.cmsMain.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
@@ -567,6 +569,12 @@
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             resources.ApplyResources(this.toolStripSeparator2, "toolStripSeparator2");
+            // 
+            // menuTunMode
+            // 
+            this.menuTunMode.Name = "menuTunMode";
+            resources.ApplyResources(this.menuTunMode, "menuTunMode");
+            this.menuTunMode.Click += new System.EventHandler(this.menuTunMode_Click);
             // 
             // menuExit
             // 
@@ -981,6 +989,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator16;
         private System.Windows.Forms.ToolStripMenuItem menuSortServerResult;
         private System.Windows.Forms.ToolStripMenuItem tsbCheckUpdateSagerNetCore;
+        private System.Windows.Forms.ToolStripMenuItem menuTunMode;
     }
 }
 
