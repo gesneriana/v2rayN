@@ -1583,6 +1583,7 @@ namespace v2rayN.Forms
             {
                 Utils.ExecCmd("taskkill /f /im tun2socks.exe"); // 关闭tun代理
                 Console.WriteLine("CloseTun is success");
+                UI.ShowWarning("关闭tun代理成功");
             }
             else
             {
@@ -1625,6 +1626,7 @@ namespace v2rayN.Forms
                             Thread.Sleep(3000);
                         }
                     }
+                    UI.ShowWarning("启动tun代理成功");
                 }
                 else
                 {
