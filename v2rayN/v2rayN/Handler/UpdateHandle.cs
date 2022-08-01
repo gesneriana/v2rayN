@@ -12,6 +12,7 @@ using v2rayN.Resx;
 using System.Linq;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using v2rayN.Tool;
 
 namespace v2rayN.Handler
 {
@@ -229,7 +230,7 @@ namespace v2rayN.Handler
                         int ret = ConfigHandler.AddBatchServers(ref config, result, id, groupId);
                         if (ret > 0)
                         {
-                            ResolveDomainNames(config, userAgent, _updateFunc);
+                            NetTool.ResolveDomainNames(config, userAgent);
                         }
                         _updateFunc(false,
                             ret > 0
@@ -246,138 +247,6 @@ namespace v2rayN.Handler
                 }
                 _updateFunc(true, $"{ResUI.MsgUpdateSubscriptionEnd}");
 
-            });
-        }
-
-        public static bool IsWin7 => Environment.OSVersion.Version.Major == 6 && Environment.OSVersion.Version.Minor == 1;
-        public static bool IsWin10 => Environment.OSVersion.Version.Major == 10;
-
-        public string Decode(string str)
-        {
-            byte[] decbuff = Convert.FromBase64String(str.Replace(",", "=").Replace("-", "+").Replace("/", "_"));
-            return Encoding.UTF8.GetString(decbuff);
-        }
-
-        public string Encode(string input)
-        {
-            byte[] encbuff = Encoding.UTF8.GetBytes(input ?? "");
-            return Convert.ToBase64String(encbuff).Replace("=", ",").Replace("+", "-").Replace("_", "/");
-        }
-        /// <summary>
-        /// Forcibly resolve the domain name to ip, solve DNS pollution
-        /// </summary>
-        /// <param name="config"></param>
-        /// <returns></returns>
-        private void ResolveDomainNames(Config config, string userAgent, Action<bool, string> update)
-        {
-            _updateFunc = update;
-            _ = Task.Factory.StartNew(async () =>
-            {
-                try
-                {
-                    if (config.subItem != null && config.subItem.Count > 0)
-                    {
-                        foreach (var sub in config.subItem)
-                        {
-                            if (!sub.forceParsing)
-                            {
-                                continue;
-                            }
-                            var vmessItems = config.vmess.Where(x => x.subid.Equals(sub.id));
-                            if (!vmessItems.Any())
-                            {
-                                continue;
-                            }
-                            Dictionary<string, string> domains = new Dictionary<string, string>();
-                            foreach (var vmessItem in vmessItems)
-                            {
-                                domains[vmessItem.address] = String.Empty;  // Domain name deduplication
-                            }
-
-                            var urlStringList = new List<string>();
-                            foreach (var domain in domains.Keys.ToList())
-                            {
-                                var urlString = $"https://dns.google/resolve?name={domain}&type=A";
-                                urlStringList.Add(urlString);
-                            }
-
-                            // 如果是win7, 那么调用我用golang写的程序请求Google DNS解析域名, Win7 会有TLS握手报错的bug
-                            if (IsWin7)
-                            {
-                                var urlStringParam = string.Join(",", urlStringList);
-                                var proc = new Process
-                                {
-                                    StartInfo = new ProcessStartInfo
-                                    {
-                                        FileName = "./Resources/http-tool.exe", // 这个程序的源码仓库是 https://github.com/gesneriana/http-tool  如果不放心请自行编译, 替换Resources中的即可
-                                        Arguments = $"\"socks5://127.0.0.1:{config.GetLocalPort(Global.InboundSocks)}\" \"{urlStringParam}\"",
-                                        UseShellExecute = false,
-                                        RedirectStandardOutput = true,
-                                        CreateNoWindow = true
-                                    }
-                                };
-                                proc.Start();
-                                proc.WaitForExit();
-                                var dnsResult = await proc.StandardOutput.ReadToEndAsync();
-                                if (string.IsNullOrWhiteSpace(dnsResult))
-                                {
-                                    continue;
-                                }
-                                var rawDnsResult = Decode(dnsResult);
-                                var dnsDataList = JsonConvert.DeserializeObject<List<DNSQuery>>(rawDnsResult);
-                                if (dnsDataList == null || dnsDataList.Count == 0)
-                                {
-                                    continue;
-                                }
-                                foreach (var dnsData in dnsDataList)
-                                {
-                                    if (dnsData.Answer == null)
-                                    {
-                                        continue;
-                                    }
-                                    var ans = dnsData.Answer.FirstOrDefault();
-                                    domains[ans.name.Trim('.')] = ans.data;
-                                }
-                            }
-                            else
-                            {
-                                foreach (var urlString in urlStringList)
-                                {
-                                    var dnsResult = await new DownloadHandle().DownloadStringAsync(urlString, true, userAgent, forceProxy: true);
-                                    if (string.IsNullOrWhiteSpace(dnsResult))
-                                    {
-                                        continue;
-                                    }
-                                    var dnsData = JsonConvert.DeserializeObject<DNSQuery>(dnsResult);
-                                    if (dnsData.Answer == null)
-                                    {
-                                        continue;
-                                    }
-                                    var ans = dnsData.Answer.FirstOrDefault();
-                                    domains[ans.name.Trim('.')] = ans.data;
-                                }
-                            }
-
-                            foreach (var vmessItem in vmessItems)
-                            {
-                                if (domains.TryGetValue(vmessItem.address, out var ip))
-                                {
-                                    if (string.IsNullOrWhiteSpace(ip))
-                                    {
-                                        continue;
-                                    }
-                                    vmessItem.address = ip;  // Forcibly resolve the domain name to ip, solve DNS pollution
-                                }
-                            }
-                        }
-
-                        ConfigHandler.SaveConfig(ref config);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _updateFunc(false, $"{ex.Message}\n{ex.StackTrace}");
-                }
             });
         }
 

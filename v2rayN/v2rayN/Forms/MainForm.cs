@@ -1583,12 +1583,12 @@ namespace v2rayN.Forms
             {
                 Utils.ExecCmd("taskkill /f /im tun2socks.exe"); // 关闭tun代理
                 Console.WriteLine("CloseTun is success");
-                UI.ShowWarning("关闭tun代理成功");
+                UI.Show("关闭tun代理成功");
                 this.menuTunMode.Text = "Tun Mode | Off";
             }
             else
             {
-                var item = config.inbound.Where(x => x.allowLANConn && x.protocol == "socks" && x.udpEnabled && x.sniffingEnabled).FirstOrDefault();
+                var item = config.inbound.Where(x => x.protocol == "socks" && x.udpEnabled && x.sniffingEnabled).FirstOrDefault();
                 if (item != null)
                 {
                     var ipTup = NetTool.GetGatewayIp();
@@ -1618,7 +1618,8 @@ namespace v2rayN.Forms
                             // https://docs.microsoft.com/zh-cn/troubleshoot/windows-server/networking/blank-default-gateway-configure-static-ip-address
                             Console.WriteLine("请打开 windows系统的 计算机管理-设备管理器-网络适配器 卸载所有的 [WireGuard Tunnel] 虚拟网卡");
                             Console.WriteLine("https://docs.microsoft.com/zh-cn/troubleshoot/windows-server/networking/blank-default-gateway-configure-static-ip-address");
-                            break;
+                            UI.ShowWarning("请打开 windows系统的 计算机管理-设备管理器-网络适配器 卸载所有的 [WireGuard Tunnel] 虚拟网卡");
+                            return;
                         }
                         else
                         {
@@ -1628,7 +1629,9 @@ namespace v2rayN.Forms
                         }
                     }
                     this.menuTunMode.Text = "Tun Mode | On";
-                    UI.ShowWarning("启动tun代理成功");
+                    UI.Show("启动tun代理成功");
+                    var ipList = NetTool.GetDirectIpList(config);
+                    NetTool.AddRoute(ipList, ipTup.Item1);
                 }
                 else
                 {
