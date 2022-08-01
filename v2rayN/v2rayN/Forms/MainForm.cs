@@ -1628,10 +1628,12 @@ namespace v2rayN.Forms
                             Thread.Sleep(3000);
                         }
                     }
+                    Task.Factory.StartNew(() => {
+                        var ipList = NetTool.GetDirectIpList(config);
+                        NetTool.AddRoute(ipList, ipTup.Item1);
+                    });
                     this.menuTunMode.Text = "Tun Mode | On";
                     UI.Show("启动tun代理成功");
-                    var ipList = NetTool.GetDirectIpList(config);
-                    NetTool.AddRoute(ipList, ipTup.Item1);
                 }
                 else
                 {
